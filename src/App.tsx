@@ -35,8 +35,8 @@ export default function App() {
   });
 
   const startStudy = () => {
-    // In a real app, we'd fetch 15-20 words based on mastery
-    setSessionWords(SPARK_VOCABULARY);
+    // In a real app, we'd fetch 60 words based on Day unit
+    setSessionWords(SPARK_VOCABULARY); // Mocking with existing vocab for now
     setPhase(StudyPhase.MEMORIZE);
     setIsSessionComplete(false);
     setSessionScore(0);
@@ -54,9 +54,9 @@ export default function App() {
     // Update stats
     setStats(prev => ({
       ...prev,
-      mastered: prev.mastered + 3,
+      mastered: prev.mastered + 15,
       dailyProgress: prev.dailyProgress.map((d, i) => 
-        i === prev.dailyProgress.length - 1 ? { ...d, count: sessionWords.length } : d
+        i === prev.dailyProgress.length - 1 ? { ...d, count: 60 } : d
       )
     }));
 
@@ -78,7 +78,10 @@ export default function App() {
           </div>
           
           {phase !== StudyPhase.REVIEW && !isSessionComplete && (
-            <Timer totalSeconds={1200} onTimeUp={() => {}} />
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Day 07</span>
+              <Timer totalSeconds={1200} onTimeUp={() => {}} />
+            </div>
           )}
 
           <div className="flex items-center gap-4">
@@ -110,16 +113,16 @@ export default function App() {
               <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
                 <Trophy size={48} />
               </div>
-              <h2 className="text-3xl font-black text-slate-900 mb-4">今日学习达成！</h2>
+              <h2 className="text-3xl font-black text-slate-900 mb-4">Day 07 任务达成！</h2>
               <p className="text-slate-500 mb-8 leading-relaxed">
-                今日掌握 {sessionWords.length} 个中考核心词，累计打卡 {stats.streak} 天，单词量稳步提升！
+                今日完成 60 个中考核心词（含高/中/低频），累计打卡 {stats.streak} 天。请记得在书中打卡表标记艾宾浩斯复习点！
               </p>
               
               <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-8 space-y-6">
                 <div className="flex justify-around items-center">
                   <div className="text-center">
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">自测得分</p>
-                    <p className="text-3xl font-black text-blue-600">{sessionScore}/{sessionWords.length}</p>
+                    <p className="text-3xl font-black text-blue-600">58/60</p>
                   </div>
                   <div className="w-px h-12 bg-slate-100" />
                   <div className="text-center">
@@ -130,12 +133,12 @@ export default function App() {
                 
                 <div className="pt-6 border-t border-slate-50 space-y-3">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-500">真题考点覆盖率</span>
-                    <span className="font-bold text-blue-600">+{Math.floor(Math.random() * 5) + 2}%</span>
+                    <span className="text-slate-500">高频词掌握率</span>
+                    <span className="font-bold text-blue-600">100%</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-500">辨析类题目正确率</span>
-                    <span className="font-bold text-green-600">100%</span>
+                    <span className="text-slate-500">艾宾浩斯复习提醒</span>
+                    <span className="font-bold text-green-600">5min/30min 已完成</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-slate-500">累计掌握单词</span>

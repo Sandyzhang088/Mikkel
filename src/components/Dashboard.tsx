@@ -22,31 +22,48 @@ export const Dashboard: React.FC<DashboardProps> = ({ onStartStudy, stats }) => 
     { name: '重点攻克', value: stats.focus, color: '#f59e0b' },
   ];
 
+  const ebbinghausStages = [
+    { label: '5分钟', status: 'completed' },
+    { label: '30分钟', status: 'completed' },
+    { label: '12小时', status: 'pending' },
+    { label: '1天', status: 'pending' },
+    { label: '2天', status: 'pending' },
+    { label: '4天', status: 'pending' },
+    { label: '7天', status: 'pending' },
+    { label: '15天', status: 'pending' },
+  ];
+
   return (
     <div className="flex flex-col gap-8 w-full max-w-4xl mx-auto px-4 py-8">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">星火英语 20分钟高效背词</h1>
-          <p className="text-slate-500 font-medium mt-1">碎片化时间，不知不觉提升中考词汇量</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">星火英语 60词高效背词</h1>
+          <p className="text-slate-500 font-medium mt-1">贴合「Day」单元编排 · 艾宾浩斯抗遗忘打卡</p>
         </div>
-        <button
-          onClick={onStartStudy}
-          className="group flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95"
-        >
-          <Play size={20} fill="currentColor" />
-          <span>开始今日 20 分钟学习</span>
-          <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="text-right hidden md:block">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">当前进度</p>
+            <p className="text-xl font-black text-blue-600">Day 07</p>
+          </div>
+          <button
+            onClick={onStartStudy}
+            className="group flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95"
+          >
+            <Play size={20} fill="currentColor" />
+            <span>开始今日 60 词挑战</span>
+            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
       </div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { icon: Trophy, label: '累计打卡', value: `${stats.streak} 天`, color: 'text-amber-600', bg: 'bg-amber-50' },
-          { icon: Target, label: '真题覆盖率', value: `${stats.examCoverage}%`, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { icon: Target, label: '高频词覆盖', value: `92%`, color: 'text-blue-600', bg: 'bg-blue-50' },
           { icon: BookOpen, label: '已掌握单词', value: stats.mastered, color: 'text-green-600', bg: 'bg-green-50' },
-          { icon: Calendar, label: '今日任务', value: '15-20 词', color: 'text-purple-600', bg: 'bg-purple-50' },
+          { icon: Calendar, label: '今日任务', value: '60 词', color: 'text-purple-600', bg: 'bg-purple-50' },
         ].map((stat, idx) => (
           <motion.div
             key={idx}
@@ -62,10 +79,35 @@ export const Dashboard: React.FC<DashboardProps> = ({ onStartStudy, stats }) => 
         ))}
       </div>
 
+      {/* Ebbinghaus Review Section */}
+      <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-slate-800">艾宾浩斯抗遗忘打卡</h3>
+          <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Day 07 单元</span>
+        </div>
+        <div className="flex flex-wrap gap-4">
+          {ebbinghausStages.map((stage, idx) => (
+            <div key={idx} className="flex flex-col items-center gap-2">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
+                stage.status === 'completed' 
+                  ? 'bg-green-500 border-green-500 text-white' 
+                  : 'bg-white border-slate-200 text-slate-400'
+              }`}>
+                {stage.status === 'completed' ? <Trophy size={16} /> : <span className="text-[10px] font-bold">{idx + 1}</span>}
+              </div>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{stage.label}</span>
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 text-xs text-slate-400 leading-relaxed">
+          * 根据艾宾浩斯遗忘曲线，在特定时间点复习可将瞬时记忆转化为长期记忆。建议配合书中打卡表使用。
+        </p>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-6">
         {/* Progress Chart */}
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">本周学习趋势</h3>
+          <h3 className="text-lg font-bold text-slate-800 mb-6">学习量趋势 (词/天)</h3>
           <div className="h-[240px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stats.dailyProgress}>
@@ -88,7 +130,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onStartStudy, stats }) => 
 
         {/* Mastery Pie Chart */}
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">词库掌握分布</h3>
+          <h3 className="text-lg font-bold text-slate-800 mb-6">考频分布掌握情况</h3>
           <div className="flex-1 flex items-center justify-center">
             <div className="h-[200px] w-[200px] relative">
               <ResponsiveContainer width="100%" height="100%">
@@ -129,11 +171,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onStartStudy, stats }) => 
       <div className="bg-blue-600 rounded-3xl p-8 text-white relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl font-bold mb-2">今日重点复习词汇</h3>
-            <p className="text-blue-100 text-sm max-w-md">系统检测到你在“词义辨析”类题目中错误率较高，建议优先复习 spend/cost/pay/take 等易混淆词。</p>
+            <h3 className="text-xl font-bold mb-2">今日高频词重点突破</h3>
+            <p className="text-blue-100 text-sm max-w-md">Day 07 单元包含 12 个高频考点词，建议在“背诵”阶段重点关注「直击考点」板块。</p>
           </div>
           <button className="px-6 py-3 bg-white text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all">
-            立即复习
+            立即开始
           </button>
         </div>
         {/* Decorative Circles */}
